@@ -1,0 +1,62 @@
+###############################################################################
+# Mysql port: 7803 / 3306                                                     #
+# Webserver port: 7801 / 80                                                   #
+###############################################################################
+version: "3.5"
+services:
+
+  mysql:
+    image: mariadb:10.4
+    container_name: bingo-mysql
+    working_dir: /application
+    volumes:
+      - .:/application
+      - ./logs/mysql:/var/log/mysql
+      - ./dump-bingo-202012111337.sql:/docker-entrypoint-initdb.d/0-dump-bingo.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=bingo-root
+      - MYSQL_DATABASE=bingo
+      - MYSQL_USER=bingo
+      - MYSQL_PASSWORD=bingo
+    networks:
+      - bingo-default
+    ports:
+      - 7803:3306
+
+  webserver:
+    image: nginx:alpine
+    container_name: bingo-webserver
+    working_dir: /application
+    networks:
+      - bingo-default
+    volumes:
+      - ./application:/application
+      - ./logs/nginx:/var/log/nginx
+      - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 7801:80
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: bingo-mailhog
+    networks:
+      - bingo-default
+    ports:
+      - 7825:1025
+      - 7802:8025
+
+  php-fpm:
+    build: phpdocker/php-fpm
+    expose:
+      - 9000
+    container_name: bingo-php-fpm
+    working_dir: /application
+    networks:
+      - bingo-default
+    volumes:
+      - ./application:/application
+      - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+
+networks:
+  bingo-default:
+    name: bingo-default
