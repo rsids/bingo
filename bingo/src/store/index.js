@@ -5,7 +5,7 @@ import ui from "./ui";
 
 Vue.use(Vuex);
 
-const base = "http://localhost:7801/api/";
+const base = process.env.VUE_APP_API_URL;
 
 export default new Vuex.Store({
   state: {
