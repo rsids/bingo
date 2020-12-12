@@ -45,6 +45,10 @@ class SendEmails extends Command
         Log::info("Executing mail");
         $emails = Email::where("sent", 0)->get();
         $emails->each(function ($email) {
+            $email->sent = 1;
+            $email->save();
+        });
+        $emails->each(function ($email) {
             $users = [];
             Log::info("Sending mail", [$email->subject]);
             $email->cards->each(function ($card) use (&$users) {

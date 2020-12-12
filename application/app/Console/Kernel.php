@@ -24,8 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-//        $schedule->job(new Heartbeat)->everyFiveMinutes();
+        $schedule
+            ->command("mail:send")
+            ->withoutOverlapping(10)
+            ->everyFiveMinutes();
     }
 
     /**
@@ -35,8 +37,8 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . "/Commands");
 
-        require base_path('routes/console.php');
+        require base_path("routes/console.php");
     }
 }
