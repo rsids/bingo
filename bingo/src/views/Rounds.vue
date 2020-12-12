@@ -46,7 +46,9 @@ export default {
         text: "Naam van de ronde",
         title: "Naam van de ronde",
       });
-      this.createRound({ round: res });
+      this.createRound({ round: res }).then((result) => {
+        this.setShowNewRound(false);
+      });
     },
 
     onDeleteRound(round) {

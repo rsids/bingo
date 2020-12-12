@@ -13,7 +13,7 @@ class RoundController
 {
     public function index()
     {
-        return new RoundsResource(Round::orderBy('title')->get());
+        return new RoundsResource(Round::orderBy("title")->get());
     }
 
     public function destroy($id)
@@ -30,17 +30,17 @@ class RoundController
         return new RoundResource($round);
     }
 
-    public function store(Request $request) {
-        $round = Round::create(['title' => $request->get('title')]);
-        $tracks = $request->get('tracks');
-        collect($tracks)->each(function ($item) use($round){
-           $track = new Track();
-           $track->artist = $item['artist'];
-           $track->song = $item['song'];
-           $track->round_id = $round->id;
-           $track->save();
+    public function store(Request $request)
+    {
+        $round = Round::create(["title" => $request->get("title")]);
+        $tracks = $request->get("tracks");
+        collect($tracks)->each(function ($item) use ($round) {
+            $track = new Track();
+            $track->artist = $item["artist"];
+            $track->song = $item["song"];
+            $track->round_id = $round->id;
+            $track->save();
         });
-        RoundResource::withoutWrapping();
-        return new RoundResource($round);
+        return new RoundsResource(Round::orderBy("title")->get());
     }
 }
