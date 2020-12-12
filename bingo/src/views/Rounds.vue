@@ -41,16 +41,6 @@ export default {
     ...mapActions(["getRounds", "createRound", "deleteRound"]),
     ...mapMutations("ui", ["setShowNewRound"]),
 
-    async addRound() {
-      let res = await this.$dialog.prompt({
-        text: "Naam van de ronde",
-        title: "Naam van de ronde",
-      });
-      this.createRound({ round: res }).then((result) => {
-        this.setShowNewRound(false);
-      });
-    },
-
     onDeleteRound(round) {
       this.deleteRound(round);
     },
