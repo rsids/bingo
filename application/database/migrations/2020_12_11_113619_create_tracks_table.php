@@ -16,7 +16,9 @@ class CreateTracksTable extends Migration
         Schema::create('tracks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('round_id')->constrained();
+            $table->foreignId('round_id')->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');;
             $table->string('artist');
             $table->string('song');
             $table->boolean('played')->default(false);

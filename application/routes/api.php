@@ -14,12 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware("auth:api")->get("/user", function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')->post('/users', 'API\UserController@import');
-Route::resource('rounds', 'App\Http\Controllers\API\RoundController');
-Route::resource('tracks', 'App\Http\Controllers\API\TrackController');
-Route::resource('users', 'App\Http\Controllers\API\UserController');
-Route::resource('cards', 'App\Http\Controllers\API\CardController');
+Route::resource("rounds", "App\Http\Controllers\API\RoundController");
+Route::resource("tracks", "App\Http\Controllers\API\TrackController");
+Route::resource("users", "App\Http\Controllers\API\UserController");
+Route::resource("cards", "App\Http\Controllers\API\CardController");
+
+Route::get(
+    "/cards/round/{round}",
+    "App\Http\Controllers\API\CardController@byRound"
+);
