@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Resources\TracksResource;
 use App\Models\Track;
 use Illuminate\Http\Request;
 
 class TrackController
 {
+    public function index()
+    {
+        return new TracksResource(
+            Track::orderBy("artist")
+                ->orderBy("song")
+                ->get()
+        );
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -18,8 +28,7 @@ class TrackController
     {
         //
         $track = Track::findOrFail($id);
-        $track->played = $request->get('played');
+        $track->played = $request->get("played");
         $track->save();
     }
-
 }

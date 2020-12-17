@@ -14,13 +14,25 @@
         ></v-card-title
       >
       <v-card-text>
-        <v-list-item v-for="user of group.users" :key="user.id">
+        <v-list-item v-for="user of group.users" :key="user.id" three-line>
           <v-list-item-content>
             <v-list-item-title>{{ user.attributes.name }}</v-list-item-title>
             <v-list-item-subtitle>{{
               user.attributes.email
             }}</v-list-item-subtitle>
+            <v-list-item-subtitle v-if="user.attributes.track"
+              ><span>{{ user.attributes.track.artist }}</span>
+              <span> - </span>
+              <span>{{ user.attributes.track.song }}</span>
+            </v-list-item-subtitle>
           </v-list-item-content>
+          <v-list-item-action>
+            <v-icon
+              @click.prevent="onSelectSong(user)"
+              title="Kies favoriete nummer"
+              >mdi-heart</v-icon
+            >
+          </v-list-item-action>
           <v-list-item-action>
             <v-icon @click.prevent="onDeleteUser(user)">mdi-delete</v-icon>
           </v-list-item-action>
@@ -39,6 +51,7 @@
     </v-btn>
     <bingo-import-users></bingo-import-users>
     <bingo-send-cards :group="activeGroup"></bingo-send-cards>
+    <bingo-track-selector v-if="user" :user="user"></bingo-track-selector>
   </div>
 </template>
 
@@ -46,15 +59,17 @@
 import { mapActions, mapState, mapMutations } from "vuex";
 import BingoImportUsers from "@/components/ImportUsers";
 import BingoSendCards from "@/components/SendCards";
+import BingoTrackSelector from "@/components/TrackSelector";
 export default {
   name: "Users",
   data() {
     return {
       userGroups: [],
+      user: null,
       activeGroup: null,
     };
   },
-  components: { BingoSendCards, BingoImportUsers },
+  components: { BingoTrackSelector, BingoSendCards, BingoImportUsers },
   mounted() {
     this.getUsers();
   },
@@ -65,10 +80,25 @@ export default {
 
   methods: {
     ...mapActions(["getUsers", "deleteUser"]),
-    ...mapMutations("ui", ["setShowImportUsers", "setShowSendCards"]),
+    ...mapMutations("ui", [
+      "setShowImportUsers",
+      "setShowSendCards",
+      "setShowSelectTrack",
+    ]),
 
-    onDeleteUser(round) {
-      this.deleteUser(round);
+    async onDeleteUser(user) {
+      let res = await this.$dialog.confirm({
+        title: "Zeker weten?",
+        text: `Weet je zeker dat ${user.attributes.name} niet meer mee doet?`,
+      });
+      if (res) {
+        this.deleteUser(user);
+      }
+    },
+
+    onSelectSong(user) {
+      this.user = user;
+      this.setShowSelectTrack(true);
     },
 
     onSendCards(group) {

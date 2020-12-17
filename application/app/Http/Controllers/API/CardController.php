@@ -40,7 +40,10 @@ class CardController
         $result = false;
         while (!$result) {
             try {
-                $tracks = $this->generateCardTracks($round->tracks);
+                $tracks = $this->generateCardTracks(
+                    $round->tracks,
+                    $user->track_id
+                );
                 $tracksString = join(",", $tracks);
                 $card = new Card();
                 $card->round_id = $round->id;
@@ -54,17 +57,26 @@ class CardController
         }
     }
 
-    function generateCardTracks($tracks)
+    function generateCardTracks($tracks, $favorite)
     {
         $col = [];
         $size = $tracks->count();
+        $hasFavorite = $tracks->contains(function ($val) use ($favorite) {
+            return $val->id === $favorite;
+        });
+        $favoriteSet = false;
         // 5 columns to generate
         for ($i = 0; $i < 5; $i++) {
             $offset = floor($size / 5) * $i;
             $j = 0;
             while ($j < 5) {
-                $num = rand(max(1, $offset), $offset + floor($size / 5));
-                $id = $tracks[$num]->id;
+                if ($hasFavorite && !$favoriteSet) {
+                    $id = $favorite;
+                    $favoriteSet = true;
+                } else {
+                    $num = rand(max(1, $offset), $offset + floor($size / 5));
+                    $id = $tracks[$num]->id;
+                }
                 if (!in_array($id, $col)) {
                     $col[] = $id;
                     $j++;

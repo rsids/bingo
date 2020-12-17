@@ -3,6 +3,7 @@ const ui = {
   state: {
     showNewRound: false,
     showImportUsers: false,
+    showSelectTrack: false,
     showSendCards: false,
     tab: "",
     tabs: [],
@@ -13,6 +14,9 @@ const ui = {
     },
     setShowImportUsers(state, show) {
       state.showImportUsers = show;
+    },
+    setShowSelectTrack(state, show) {
+      state.showSelectTrack = show;
     },
     setShowSendCards(state, show) {
       state.showSendCards = show;

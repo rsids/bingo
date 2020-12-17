@@ -67,9 +67,15 @@ export default new Vuex.Store({
         commit("setRound", result.data);
       });
     },
-    getTracks() {
-      axios.get(base + "?m=getTracks").then((trackData) => {
-        console.log(trackData);
+    getTracks({ commit }) {
+      axios.get(base + "tracks").then((result) => {
+        commit(
+          "setTracks",
+          result.data.data.map((track) => {
+            track.attributes.track = `${track.attributes.artist} - ${track.attributes.song}`;
+            return track;
+          })
+        );
       });
     },
     getUsers({ commit, state }) {
@@ -91,6 +97,10 @@ export default new Vuex.Store({
 
     setPlayed(_, { id, played }) {
       return axios.put(base + "tracks/" + id, { played });
+    },
+
+    setFavoriteTrack(_, { userId, trackId }) {
+      return axios.put(base + "users/" + userId, { track_id: trackId });
     },
   },
   modules: {

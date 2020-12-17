@@ -13,13 +13,15 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cards', function (Blueprint $table) {
+        Schema::create("cards", function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('round_id')->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');;
-            $table->string('tracks')->unique();
+            $table
+                ->foreignId("round_id")
+                ->constrained()
+                ->onUpdate("cascade")
+                ->onDelete("cascade");
+            $table->string("tracks")->unique();
         });
     }
 
@@ -30,6 +32,6 @@ class CreateCardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cards');
+        Schema::dropIfExists("cards");
     }
 }

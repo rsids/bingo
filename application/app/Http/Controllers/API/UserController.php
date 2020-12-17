@@ -33,4 +33,12 @@ class UserController
 
         return $this->index();
     }
+
+    public function update(Request $request, $id)
+    {
+        //
+        $user = User::findOrFail($id);
+        $user->track_id = $request->get("track_id");
+        $user->save();
+    }
 }
