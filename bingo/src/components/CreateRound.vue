@@ -68,7 +68,7 @@ export default {
       parser(csv, { columns: true, delimiter: "," }, (err, output) => {
         this.tracks = output.map((track) => {
           return {
-            artist: track["Artist Name"] || track["Artist(s) Name"] || track["Artist Names"],
+            artist: track["Artist Name"] || track["Artist(s) Name"] || track["Artist Name(s)"],
             song: track["Track Name"],
           };
         });
